@@ -11,21 +11,21 @@ export class PlacesService {
       'p1',
       'Manhattan Mansion',
       'In the heart of New York City.',
-      'https://www.google.com/search?q=manhattan+apartment&tbm=isch&ved=2ahUKEwiY8MrjmeHoAhWARDABHcbnAC0Q2-cCegQIABAA&oq=manhattan+apartment&gs_lcp=CgNpbWcQAzICCAAyAggAMgIIADICCAAyAggAMgIIADICCAAyAggAMgIIADICCAA6BAgAEENQ1xBYtCxg_y1oAHAAeACAAcwBiAHsCpIBBTAuOS4xmAEAoAEBqgELZ3dzLXdpei1pbWc&sclient=img&ei=DieSXpixFYCJwbkPxs-D6AI&bih=657&biw=1360&rlz=1C1GCEB_enCO889CO889#imgrc=tkvsXgHTUF0KmM',
+      'https://i.pinimg.com/originals/83/c6/bc/83c6bcc2981c5145965de0f2c1a395af.jpg',
       149
     ),
     new Place(
       'p2',
       'San Francisco Apartment',
       'In the heart of California.',
-      'https://www.google.com/search?q=san+francisco+apartments+for+sale&rlz=1C1GCEB_enCO889CO889&source=lnms&tbm=isch&sa=X&ved=2ahUKEwilzo_6meHoAhXMhOAKHUw7ALQQ_AUoAXoECBMQAw&biw=1360&bih=657#imgrc=br5yE2mukI7kjM',
+      'https://static.trulia-cdn.com/pictures/thumbs_6/ps.88/d/4/2/8/picture-uh=3eee92c5cf2c3657bf837d3c3b87986-ps=d428e11a7e92dac8bf2633884f0395.jpg',
       1234.67
     ),
     new Place(
       'p3',
       'Medellín Apartment',
       'In the heart of Antioquia Colombia.',
-      'https://www.google.com/search?q=medellin+apartment&tbm=isch&ved=2ahUKEwj3tfb6meHoAhVktTEKHYREBkUQ2-cCegQIABAA&oq=medellin+apartment&gs_lcp=CgNpbWcQAzICCAAyAggAMgYIABAIEB4yBAgAEBgyBAgAEBgyBAgAEBgyBAgAEBgyBAgAEBgyBAgAEBg6BAgAEEM6BAgAEB46BggAEAUQHlCVmwRYvq4EYMevBGgBcAB4AIABkAGIAewSkgEEMC4xOZgBAKABAaoBC2d3cy13aXotaW1n&sclient=img&ei=PyeSXreaEuTqxgGEiZmoBA&bih=657&biw=1360&rlz=1C1GCEB_enCO889CO889#imgrc=DiJxrX1uz__MHM',
+      'https://www.medellincolombia.co/wp-content/uploads/2018/03/Medellin-Apartment-Rental.jpg',
       1000.58
     )
   ];

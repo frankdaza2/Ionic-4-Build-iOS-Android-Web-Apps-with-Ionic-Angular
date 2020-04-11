@@ -5,6 +5,6 @@ export class Place {
         public title: string, 
         public description: string, 
         public imageUrl: string, 
-        public prica: number) { }
+        public price: number) { }
 
 }
