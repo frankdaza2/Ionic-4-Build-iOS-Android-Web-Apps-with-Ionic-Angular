@@ -28,6 +28,16 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'bookings',
+        children: [
+          {
+            path: '',
+            loadChildren: () =>
+              import('../bookings/bookings.module').then(m => m.BookingsPageModule)
+          }
+        ]
+      },
+      {
         path: '',
         redirectTo: '/tabs/discover',
         pathMatch: 'full'
