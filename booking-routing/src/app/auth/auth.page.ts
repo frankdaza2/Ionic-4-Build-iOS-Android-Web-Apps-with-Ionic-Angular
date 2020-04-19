@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 })
 export class AuthPage implements OnInit {
 
+  isLoading = false;
   userIsAuthenticate = false;
 
   constructor(
@@ -20,9 +21,11 @@ export class AuthPage implements OnInit {
   }
 
   onLogin() {
+    this.isLoading = true;
     this.authService.login();
-    this.router.navigateByUrl('/tabs/discover');
+    setTimeout(() => {
+      this.isLoading = false;
+      this.router.navigateByUrl('/tabs/discover');
+    }, 1500);
   }
-
-
 }
