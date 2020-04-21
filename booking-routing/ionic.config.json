@@ -1,5 +1,7 @@
 {
   "name": "booking-routing",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }

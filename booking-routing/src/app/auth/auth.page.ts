@@ -11,7 +11,7 @@ import { LoadingController } from '@ionic/angular';
 export class AuthPage implements OnInit {
 
   isLoading = false;
-  userIsAuthenticate = false;
+  userIsAuthenticate = true;
 
   constructor(
     private authService: AuthService,
