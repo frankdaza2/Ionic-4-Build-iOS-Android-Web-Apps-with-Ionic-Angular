@@ -13,6 +13,7 @@ export class AuthPage implements OnInit {
 
   isLoading = false;
   userIsAuthenticate = true;
+  isLogin = true;
 
   constructor(
     private authService: AuthService,
@@ -36,6 +37,10 @@ export class AuthPage implements OnInit {
           this.router.navigateByUrl('/tabs/discover');
         }, 1500);
       });
+  }
+
+  onSwitchAuthMode() {
+    this.isLogin = !this.isLogin;
   }
 
   onSubmit(form: NgForm) {
