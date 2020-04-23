@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Place } from '../../place';
+import { Place } from '../../place.model';
 
 @Component({
   selector: 'app-offer-item',

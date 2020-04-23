@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Place } from '../place';
+import { Place } from '../place.model';
 import { PlacesService } from '../places.service';
 import { SegmentChangeEventDetail } from '@ionic/core';
 

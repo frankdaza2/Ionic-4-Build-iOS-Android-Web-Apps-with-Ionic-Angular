@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Place } from '../../place';
+import { Place } from '../../place.model';
 import { ActivatedRoute } from '@angular/router';
 import { NavController, ModalController, ActionSheetController } from '@ionic/angular';
 import { PlacesService } from '../../places.service';
@@ -60,7 +60,7 @@ export class PlaceDetailPage implements OnInit {
 
     this.modalCtrl.create({ 
       component: CreateBookingComponent,
-      componentProps: { selectedPlace: this.place }
+      componentProps: { selectedPlace: this.place, selectedMode: mode }
     }).then(modalEl => {
       modalEl.present();
       return modalEl.onDidDismiss();
