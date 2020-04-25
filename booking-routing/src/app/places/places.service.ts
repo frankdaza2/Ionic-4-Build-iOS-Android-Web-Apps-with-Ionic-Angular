@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Place } from './place.model';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,8 @@ export class PlacesService {
       'https://i.pinimg.com/originals/83/c6/bc/83c6bcc2981c5145965de0f2c1a395af.jpg',
       149,
       new Date('2019-01-01'),
-      new Date('2019-12-31')
+      new Date('2019-12-31'),
+      'abc'
     ),
     new Place(
       'p2',
@@ -23,7 +25,8 @@ export class PlacesService {
       'https://static.trulia-cdn.com/pictures/thumbs_6/ps.88/d/4/2/8/picture-uh=3eee92c5cf2c3657bf837d3c3b87986-ps=d428e11a7e92dac8bf2633884f0395.jpg',
       1234.67,
       new Date('2019-01-01'),
-      new Date('2019-12-31')
+      new Date('2019-12-31'),
+      'abc'
     ),
     new Place(
       'p3',
@@ -32,7 +35,8 @@ export class PlacesService {
       'https://www.medellincolombia.co/wp-content/uploads/2018/03/Medellin-Apartment-Rental.jpg',
       1000.58,
       new Date('2019-01-01'),
-      new Date('2019-12-31')
+      new Date('2019-12-31'),
+      'abc'
     )
   ];
 
@@ -40,9 +44,26 @@ export class PlacesService {
     return [...this._places];
   }
 
-  constructor() { }
+  constructor(private authService: AuthService) { }
 
   getPlace(id: string) {
     return {...this._places.find(p => p.id === id)};
+  }
+
+  addPlace(title: string, description: string, price: number, dateFrom: Date, dateTo: Date) {
+    const newPlace = new Place(
+      Math.random().toString(),
+      title,
+      description,
+      'https://www.medellincolombia.co/wp-content/uploads/2018/03/Medellin-Apartment-Rental.jpg',
+      price,
+      dateFrom,
+      dateTo,
+      this.authService.userId
+    );
+    this._places.push(newPlace);
+    console.log('places.service.ts -> addPlace -> ', newPlace);
+    console.log('places.service.ts -> _places -> ', this._places);
+    
   }
 }
