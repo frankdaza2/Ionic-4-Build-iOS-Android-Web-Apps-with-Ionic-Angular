@@ -54,8 +54,5 @@ export class NewOfferPage implements OnInit {
 
     this.form.reset();
     this.router.navigate(['/tabs/offers']);
-
-    console.log('Offert created');
-    
   }
 }
