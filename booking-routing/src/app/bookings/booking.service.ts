@@ -13,7 +13,7 @@ export class BookingService {
         return this._bookings.asObservable();
     }
 
-    constructor(private authService: AuthService) {}
+    constructor(private authService: AuthService) { }
 
     addBooking(
         placeId: string,
@@ -43,6 +43,8 @@ export class BookingService {
     }
 
     cancelBooking(bookingId: string) {
-
+        return this.bookings.pipe(take(1), delay(1000), tap(bookings => {
+            this._bookings.next(bookings.filter(booking => booking.id !== bookingId));
+        }));
     }
 }
