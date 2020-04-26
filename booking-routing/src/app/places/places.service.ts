@@ -1,74 +1,164 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Place } from './place.model';
-import { AuthService } from '../auth/auth.service';
 import { BehaviorSubject, of } from 'rxjs';
 import { take, map, tap, delay, switchMap } from 'rxjs/operators';
 
+import { Place } from './place.model';
+import { AuthService } from '../auth/auth.service';
+
+// [
+//   new Place(
+//     'p1',
+//     'Manhattan Mansion',
+//     'In the heart of New York City.',
+//     'https://lonelyplanetimages.imgix.net/mastheads/GettyImages-538096543_medium.jpg?sharp=10&vib=20&w=1200',
+//     149.99,
+//     new Date('2019-01-01'),
+//     new Date('2019-12-31'),
+//     'abc'
+//   ),
+//   new Place(
+//     'p2',
+//     "L'Amour Toujours",
+//     'A romantic place in Paris!',
+//     'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Paris_Night.jpg/1024px-Paris_Night.jpg',
+//     189.99,
+//     new Date('2019-01-01'),
+//     new Date('2019-12-31'),
+//     'abc'
+//   ),
+//   new Place(
+//     'p3',
+//     'The Foggy Palace',
+//     'Not your average city trip!',
+//     'https://upload.wikimedia.org/wikipedia/commons/0/01/San_Francisco_with_two_bridges_and_the_fog.jpg',
+//     99.99,
+//     new Date('2019-01-01'),
+//     new Date('2019-12-31'),
+//     'abc'
+//   )
+// ]
 
 interface PlaceData {
-  availableFrom: string,
-  availableTo: string,
-  description: string,
-  imageUrl: string,
-  price: number,
-  title: string,
-  userId: string
+  availableFrom: string;
+  availableTo: string;
+  description: string;
+  imageUrl: string;
+  price: number;
+  title: string;
+  userId: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlacesService {
-
   private _places = new BehaviorSubject<Place[]>([]);
 
   get places() {
     return this._places.asObservable();
   }
 
-  constructor(private authService: AuthService, private httpClient: HttpClient) { }
+  constructor(private authService: AuthService, private http: HttpClient) {}
 
-  getPlace(id: string) {
-    return this.httpClient.get<PlaceData>(`https://ionic-angular-course-knarf.firebaseio.com/offered-places/${id}.json`)
-      .pipe(map(placeData => {
-        return new Place(
-          id,
-          placeData.title,
-          placeData.description,
-          placeData.imageUrl,
-          placeData.price,
-          new Date(placeData.availableFrom),
-          new Date(placeData.availableTo),
-          placeData.userId
-        );
-      }));
+  fetchPlaces() {
+    return this.http
+      .get<{ [key: string]: PlaceData }>(
+        'https://ionic-angular-course-knarf.firebaseio.com/offered-places.json'
+      )
+      .pipe(
+        map(resData => {
+          const places = [];
+          for (const key in resData) {
+            if (resData.hasOwnProperty(key)) {
+              places.push(
+                new Place(
+                  key,
+                  resData[key].title,
+                  resData[key].description,
+                  resData[key].imageUrl,
+                  resData[key].price,
+                  new Date(resData[key].availableFrom),
+                  new Date(resData[key].availableTo),
+                  resData[key].userId
+                )
+              );
+            }
+          }
+          return places;
+          // return [];
+        }),
+        tap(places => {
+          this._places.next(places);
+        })
+      );
   }
 
-  addPlace(title: string, description: string, price: number, dateFrom: Date, dateTo: Date) {
+  getPlace(id: string) {
+    return this.http
+      .get<PlaceData>(
+        `https://ionic-angular-course-knarf.firebaseio.com/offered-places/${id}.json`
+      )
+      .pipe(
+        map(placeData => {
+          return new Place(
+            id,
+            placeData.title,
+            placeData.description,
+            placeData.imageUrl,
+            placeData.price,
+            new Date(placeData.availableFrom),
+            new Date(placeData.availableTo),
+            placeData.userId
+          );
+        })
+      );
+  }
+
+  addPlace(
+    title: string,
+    description: string,
+    price: number,
+    dateFrom: Date,
+    dateTo: Date
+  ) {
     let generatedId: string;
     const newPlace = new Place(
       Math.random().toString(),
       title,
       description,
-      'https://www.medellincolombia.co/wp-content/uploads/2018/03/Medellin-Apartment-Rental.jpg',
+      'https://lonelyplanetimages.imgix.net/mastheads/GettyImages-538096543_medium.jpg?sharp=10&vib=20&w=1200',
       price,
       dateFrom,
       dateTo,
       this.authService.userId
     );
-
-    return this.httpClient.post<{ name: string }>('https://ionic-angular-course-knarf.firebaseio.com/offered-places.json', {
-      ...newPlace, id: null
-    }).pipe(switchMap(response => {
-      generatedId = response.name;
-      return this.places;
-    }),
-      take(1),
-      tap(places => {
-        newPlace.id = generatedId;
-        this._places.next(places.concat(newPlace));
-      }));
+    return this.http
+      .post<{ name: string }>(
+        'https://ionic-angular-course-knarf.firebaseio.com/offered-places.json',
+        {
+          ...newPlace,
+          id: null
+        }
+      )
+      .pipe(
+        switchMap(resData => {
+          generatedId = resData.name;
+          return this.places;
+        }),
+        take(1),
+        tap(places => {
+          newPlace.id = generatedId;
+          this._places.next(places.concat(newPlace));
+        })
+      );
+    // return this.places.pipe(
+    //   take(1),
+    //   delay(1000),
+    //   tap(places => {
+    //     this._places.next(places.concat(newPlace));
+    //   })
+    // );
   }
 
   updatePlace(placeId: string, title: string, description: string) {
@@ -81,13 +171,10 @@ export class PlacesService {
         } else {
           return of(places);
         }
-      }), 
-      tap(() => {
-        this._places.next(updatedPlaces);
       }),
       switchMap(places => {
         const updatedPlaceIndex = places.findIndex(pl => pl.id === placeId);
-        const updatedPlaces = [...places];
+        updatedPlaces = [...places];
         const oldPlace = updatedPlaces[updatedPlaceIndex];
         updatedPlaces[updatedPlaceIndex] = new Place(
           oldPlace.id,
@@ -99,35 +186,14 @@ export class PlacesService {
           oldPlace.availableTo,
           oldPlace.userId
         );
-        return this.httpClient.put(`https://ionic-angular-course-knarf.firebaseio.com/offered-places/${placeId}.json`, 
-          {...updatedPlaces[updatedPlaceIndex], id: null}
+        return this.http.put(
+          `https://ionic-angular-course-knarf.firebaseio.com/offered-places/${placeId}.json`,
+          { ...updatedPlaces[updatedPlaceIndex], id: null }
         );
+      }),
+      tap(() => {
+        this._places.next(updatedPlaces);
       })
     );
-  }
-
-  fetchPlaces() {
-    return this.httpClient.get<{ [key: string]: PlaceData }>('https://ionic-angular-course-knarf.firebaseio.com/offered-places.json')
-      .pipe(map(response => {
-        const places = [];
-        for (const key in response) {
-          if (response.hasOwnProperty(key)) {
-            places.push(new Place(
-              key,
-              response[key].title,
-              response[key].description,
-              response[key].imageUrl,
-              response[key].price,
-              new Date(response[key].availableFrom),
-              new Date(response[key].availableTo),
-              response[key].userId
-            ));
-          }
-        }
-        return places;
-      }),
-        tap(places => {
-          this._places.next(places);
-        }));
   }
 }
