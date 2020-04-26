@@ -51,20 +51,21 @@ export class PlacesService {
     return this.httpClient.post<{ name: string }>('https://ionic-angular-course-knarf.firebaseio.com/offered-places.json', {
       ...newPlace, id: null
     }).pipe(switchMap(response => {
-      generatedId = response.name;  
+      generatedId = response.name;
       return this.places;
     }),
-    take(1),
-    tap(places => {
-      newPlace.id = generatedId;
-      this._places.next(places.concat(newPlace));
-    }));
+      take(1),
+      tap(places => {
+        newPlace.id = generatedId;
+        this._places.next(places.concat(newPlace));
+      }));
   }
 
   updatePlace(placeId: string, title: string, description: string) {
-    return this.places.pipe(take(1),
-      delay(1000),
-      tap(places => {
+    let updatedPlaces: Place[];
+    return this.places.pipe(
+      take(1),
+      switchMap(places => {
         const updatedPlaceIndex = places.findIndex(pl => pl.id === placeId);
         const updatedPlaces = [...places];
         const oldPlace = updatedPlaces[updatedPlaceIndex];
@@ -78,8 +79,14 @@ export class PlacesService {
           oldPlace.availableTo,
           oldPlace.userId
         );
+        return this.httpClient.put(`https://ionic-angular-course-knarf.firebaseio.com/offered-places/${placeId}.json`, 
+          {...updatedPlaces[updatedPlaceIndex], id: null}
+        );
+      }), 
+      tap(() => {
         this._places.next(updatedPlaces);
-      }));
+      })
+    );
   }
 
   fetchPlaces() {
@@ -102,8 +109,8 @@ export class PlacesService {
         }
         return places;
       }),
-      tap(places => {
-        this._places.next(places);
-      }));
+        tap(places => {
+          this._places.next(places);
+        }));
   }
 }
