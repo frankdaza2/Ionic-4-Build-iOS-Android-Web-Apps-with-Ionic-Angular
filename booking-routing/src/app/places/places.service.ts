@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Place } from './place.model';
 import { AuthService } from '../auth/auth.service';
 import { BehaviorSubject } from 'rxjs';
@@ -48,7 +49,7 @@ export class PlacesService {
     return this._places.asObservable();
   }
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private httpClient: HttpClient) { }
 
   getPlace(id: string) {
     return this.places.pipe(take(1), map(places => {
@@ -68,9 +69,15 @@ export class PlacesService {
       this.authService.userId
     );
 
-    return this.places.pipe(take(1), delay(1000), tap(places => {
-      this._places.next(places.concat(newPlace));
+    return this.httpClient.post('https://ionic-angular-course-knarf.firebaseio.com/offered-places.json', {
+      ...newPlace, id: null
+    }).pipe(tap(response => {
+      console.log(response);
     }));
+
+    // return this.places.pipe(take(1), delay(1000), tap(places => {
+    //   this._places.next(places.concat(newPlace));
+    // }));
   }
 
   updatePlace(placeId: string, title: string, description: string) {
