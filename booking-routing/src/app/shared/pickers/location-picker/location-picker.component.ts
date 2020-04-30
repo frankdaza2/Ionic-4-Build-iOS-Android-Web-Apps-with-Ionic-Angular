@@ -43,7 +43,7 @@ export class LocationPickerComponent implements OnInit {
             return of(this.getMapImage(
               pickedLocation.lat,
               pickedLocation.lng,
-              14
+              18
             ));
           })
         ).subscribe(staticMapImageUrl => {
