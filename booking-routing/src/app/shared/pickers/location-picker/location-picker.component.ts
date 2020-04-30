@@ -14,6 +14,9 @@ import { of } from 'rxjs';
 })
 export class LocationPickerComponent implements OnInit {
 
+  selectedLocationImage: string;
+  isLoading = false;
+
   constructor(private modalController: ModalController, private httpClient: HttpClient) { }
 
   ngOnInit() {}
@@ -32,6 +35,8 @@ export class LocationPickerComponent implements OnInit {
           staticMapImageUrl: null
         };
 
+        this.isLoading = true;
+
         this.getAddress(modalData.data.lat, modalData.data.lng).pipe(
           switchMap(address => {
             pickedLocation.address = address;
@@ -43,6 +48,8 @@ export class LocationPickerComponent implements OnInit {
           })
         ).subscribe(staticMapImageUrl => {
           pickedLocation.staticMapImageUrl = staticMapImageUrl;
+          this.selectedLocationImage = staticMapImageUrl;
+          this.isLoading = false;
         });
       });
       modalEl.present();
