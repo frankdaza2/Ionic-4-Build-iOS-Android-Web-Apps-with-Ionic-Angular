@@ -10,10 +10,11 @@ import { environment } from 'src/environments/environment';
 export class MapModalComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('map') mapElementRef: ElementRef;
-  @Input() center = { lat: -34.397, lng: 150.644 }
+  @Input() center = { lat: 4.57, lng: -74.29 }
   @Input() selectable = true;
   @Input() closeButtonText = 'Cancel';
   @Input() title = 'Pick Location';
+  @Input() zoom = 6;
 
   clickListener: any;
   googleMaps: any;
@@ -28,7 +29,7 @@ export class MapModalComponent implements OnInit, AfterViewInit, OnDestroy {
       const mapEl = this.mapElementRef.nativeElement;
       const map = new googleMaps.Map(mapEl, {
         center: this.center,
-        zoom: 18
+        zoom: this.zoom
       });
 
       this.googleMaps.event.addListenerOnce(map, 'idle', () => {

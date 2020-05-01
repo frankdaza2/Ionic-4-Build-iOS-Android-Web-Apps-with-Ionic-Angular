@@ -30,7 +30,8 @@ export class LocationPickerComponent implements OnInit {
   private showErrorAlert() {
     this.alertController.create({ 
       header: 'Could not fetch location', 
-      message: 'Please use the map to pick a location!'
+      message: 'Please use the map to pick a location!',
+      buttons: ['Okay']
     }).then(alertEl => alertEl.present());
   }
 
@@ -40,35 +41,35 @@ export class LocationPickerComponent implements OnInit {
       return;
     }
 
+    this.isLoading = true;
+
     Plugins.Geolocation.getCurrentPosition()
       .then(geoPosition => {
         const coordinates: Coordinates = {
           lat: geoPosition.coords.latitude,
           lng: geoPosition.coords.longitude
         };
+
+        this.createPlace(coordinates.lat, coordinates.lng);
+        this.isLoading = false;
       })
       .catch(error => {
+        this.isLoading = false;
         this.showErrorAlert();
     });
   }
 
-  private openMap() {
-    this.modalController.create({ component: MapModalComponent }).then(modalEl => {
-      modalEl.onDidDismiss().then(modalData => {
-        if (!modalData.data) {
-          return;
-        }
+  private createPlace(lat: number, lng: number) {
+    const pickedLocation: PlaceLocation = {
+      lat: lat,
+      lng: lng,
+      address: null,
+      staticMapImageUrl: null
+    };
 
-        const pickedLocation: PlaceLocation = {
-          lat: modalData.data.lat,
-          lng: modalData.data.lng,
-          address: null,
-          staticMapImageUrl: null
-        };
+    this.isLoading = true;
 
-        this.isLoading = true;
-
-        this.getAddress(modalData.data.lat, modalData.data.lng).pipe(
+        this.getAddress(lat, lng).pipe(
           switchMap(address => {
             pickedLocation.address = address;
             return of(this.getMapImage(
@@ -83,6 +84,22 @@ export class LocationPickerComponent implements OnInit {
           this.isLoading = false;
           this.locationPick.emit(pickedLocation);
         });
+  }
+
+  private openMap() {
+    this.modalController.create({ component: MapModalComponent }).then(modalEl => {
+      modalEl.onDidDismiss().then(modalData => {
+        if (!modalData.data) {
+          return;
+        }
+        
+        const coordinates: Coordinates = {
+          lat: modalData.data.lat,
+          lng: modalData.data.lng
+        };
+
+        this.createPlace(coordinates.lat, coordinates.lng);
+
       });
       modalEl.present();
     });
@@ -90,7 +107,7 @@ export class LocationPickerComponent implements OnInit {
   
   onPickLocation() {
     this.actionSheetController.create({
-      header: 'Please Çhoose',
+      header: 'Please Choose',
       buttons: [
         { text: 'Auto-Locate', handler: () => { this.locateUser(); } },
         { text: 'Pick on Map', handler: () => { this.openMap(); } },

@@ -154,7 +154,8 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
       center: { lat: this.place.location.lat, lng: this.place.location.lng },
       selectable: false,
       closeButtonText: 'Close',
-      title: this.place.location.address
+      title: this.place.location.address,
+      zoom: 18
      } }).then(modalEl => {
       modalEl.present();
     });
