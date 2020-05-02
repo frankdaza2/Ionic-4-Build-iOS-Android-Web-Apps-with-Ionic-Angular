@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 })
 export class MapModalComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  @ViewChild('map') mapElementRef: ElementRef;
+  @ViewChild('map', { static: true }) mapElementRef: ElementRef;
   @Input() center = { lat: 4.57, lng: -74.29 }
   @Input() selectable = true;
   @Input() closeButtonText = 'Cancel';
